@@ -1,0 +1,25 @@
+<!-- <div id="dicomImage" style="width:100%;height:99vh;position:relative;display:inline-block;color:transparent;">
+    <div style="position: absolute; top: 10px; left: 10px; z-index: 1;">
+
+    </div>
+</div> -->
+<!-- <button id="enable-window-level" style="font-size: 18px; padding: 10px 20px;"
+            (click)="enableWindowLevel()">Enable
+            window level</button>
+        <button>reset</button> -->
+
+<div id="dicomImage" style="width:100%;height:99vh;position:relative;display:inline-block;color:transparent;">
+    <div style="position: absolute; top: 10px; left: 10px; z-index: 1;">
+        <!-- Other elements -->
+    </div>
+</div>
+
+<div style="position: fixed; bottom: 20px; width: 100%; padding: 0 20px; box-sizing: border-box;">
+    <mat-slider style="width: 100%;" [min]="0" [max]="2" [step]="1" (change)="onSliderChange($event)"
+        name="currentStackIndex" ngDefaultControl>
+        <input matSliderThumb [(ngModel)]="currentStackIndex">
+    </mat-slider>
+
+    <!-- <mat-slider thumbLabel tickInterval="100" step="10" min="0" max="100" name="currentImageIdIndex"
+        [(ngModel)]="currentStackIndex"></mat-slider> -->
+</div>

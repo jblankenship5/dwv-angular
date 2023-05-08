@@ -4,7 +4,8 @@ $primary: map-get($dark-theme, primary);
 $accent: map-get($dark-theme, accent);
 
 #dwv {
-  height: 90%; }
+  height: 70%;
+  }
 
 a {
   color: mat.get-color-from-palette($accent);
@@ -25,6 +26,63 @@ a:hover {
   color: mat.get-color-from-palette($primary);
 }
 
+.mat-select {
+  color: mat.get-color-from-palette($primary);
+}
+
+/* Chrome */
+// input[type='range']::-webkit-slider-runnable-track {
+//   background: #4CAF50;
+//   /* Change to the color you prefer for the track */
+// }
+
+// input[type='range']::-webkit-slider-thumb {
+//   -webkit-appearance: none;
+//   background: #4CAF50;
+//   /* Change to the color you prefer for the thumb */
+//   border-radius: 50%;
+//   height: 16px;
+//   width: 16px;
+//   cursor: pointer;
+// }
+
+// /* Firefox */
+// input[type='range']::-moz-range-track {
+//   background: #4CAF50;
+//   /* Change to the color you prefer for the track */
+// }
+
+// input[type='range']::-moz-range-thumb {
+//   background: #4CAF50;
+//   /* Change to the color you prefer for the thumb */
+//   border-radius: 50%;
+//   height: 16px;
+//   width: 16px;
+//   cursor: pointer;
+// }
+
+// /* Edge */
+// input[type='range']::-ms-track {
+//   background: #4CAF50;
+//   /* Change to the color you prefer for the track */
+// }
+
+// input[type='range']::-ms-thumb {
+//   background: #4CAF50;
+//   /* Change to the color you prefer for the thumb */
+//   border-radius: 50%;
+//   height: 16px;
+//   width: 16px;
+//   cursor: pointer;
+// }
+
+.tool-info-controls {
+  margin-top: 1em;
+}
+
+.raised-button {
+  margin: 0.2em;
+}
 .legend {
   text-align: center;
   font-size: 8pt;

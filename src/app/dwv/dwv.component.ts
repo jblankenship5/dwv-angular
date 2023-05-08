@@ -25,7 +25,7 @@ export class DwvComponent implements OnInit {
   public versions: any;
   public tools = {
       Scroll: {},
-      ZoomAndPan: {},
+      // ZoomAndPan: {},
       WindowLevel: {},
       Draw: {
           options: ['Ruler']
@@ -35,6 +35,11 @@ export class DwvComponent implements OnInit {
   public selectedTool = 'Select Tool';
   public loadProgress = 0;
   public dataLoaded = false;
+  public rangeMaxLayer: number;
+  public rangeValueLayer: number;
+
+  public windowLevelWidth: number;
+  public windowLevelCenter: number;
 
   private dwvApp: any;
   private metaData: any[];
@@ -62,6 +67,7 @@ export class DwvComponent implements OnInit {
       dataViewConfigs: {'*': [{divId: 'layerGroup0'}]},
       tools: this.tools
     });
+
     // handle load events
     let nLoadItem = null;
     let nReceivedLoadError = null;
@@ -96,6 +102,8 @@ export class DwvComponent implements OnInit {
       this.metaData = dwv.utils.objectToArray(this.dwvApp.getMetaData(0));
       // set data loaded flag
       this.dataLoaded = true;
+      const size = this.dwvApp.getImage(0).getGeometry().getSize();
+      this.rangeMaxLayer = size.get(2) - 1;
     });
     this.dwvApp.addEventListener('loadend', (/*event*/) => {
       if (nReceivedLoadError) {
@@ -128,13 +136,55 @@ export class DwvComponent implements OnInit {
         this.dwvApp.defaultOnKeydown(event);
     });
     // handle window resize
-    window.addEventListener('resize', this.dwvApp.onResize);
+    // window.addEventListener('resize', this.dwvApp.onResize);
+
+    // handle slider for layers
+    // this.dwvApp.addEventListener('load', (/*event*/) => {
+    //   // set range max
+    //   const size = this.dwvApp.getImage(0).getGeometry().getSize();
+    //   this.rangeMax = size.get(2) - 1;
+    // });
+    // handle slider for layers
+    this.dwvApp.addEventListener('positionchange', (/*event*/) => {
+      const lg = this.dwvApp.getLayerGroupByDivId('layerGroup0');
+      const vc = lg.getActiveViewLayer().getViewController();
+      this.rangeValueLayer = vc.getCurrentIndex().get(2);
+    });
+
+    this.dwvApp.addEventListener('wlchange', (event) => {
+      // console.log(event);
+      const lg = this.dwvApp.getLayerGroupByDivId('layerGroup0');
+      // console.log(lg1);
+      // console.log(lg);
+      const vc = lg.getActiveViewLayer().getViewController();
+      // console.log(vc);
+      this.windowLevelCenter = vc.getWindowLevel().center;
+      this.windowLevelWidth = vc.getWindowLevel().width;
+      // console.log(this.dwvApp.getImage(0).getGeometry());
+      // console.log(vc.getWindowLevel().getCenter())
+
+    });
 
     // setup drop box
     this.setupDropbox();
 
     // possible load from location
     dwv.utils.loadFromUri(window.location.href, this.dwvApp);
+  }
+
+  getToolName(tool: string) {
+    switch (tool) {
+      case 'Scroll':
+        return 'Scroll Layers';
+      case 'ZoomAndPan':
+        return 'Zoom & Pan';
+      case 'WindowLevel':
+        return 'Window Level';
+      case 'Draw':
+        return 'Draw';
+      default:
+        return 'Unknown';
+    }
   }
 
   /**
@@ -155,6 +205,30 @@ export class DwvComponent implements OnInit {
       res = 'straighten';
     }
     return res;
+  }
+
+  /**
+   * handle range slider for layers.
+   */
+  onRangeChange(value: number) {
+    const lg = this.dwvApp.getLayerGroupByDivId('layerGroup0');
+    const vc = lg.getActiveViewLayer().getViewController();
+    const index = vc.getCurrentIndex();
+    const values = index.getValues();
+    values[2] = value;
+    vc.setCurrentIndex(new dwv.math.Index(values));
+  }
+  /**
+    * handle range slider for window level.
+    */
+  onWindowLevelChange(value: number) {
+    const lg = this.dwvApp.getLayerGroupByDivId('layerGroup0');
+    const vc = lg.getActiveViewLayer().getViewController();
+    const index = vc.getCurrentIndex();
+    // // console.warn('index', index);
+    // const values = index.getValues();
+    // values[2] = value;
+    // vc.setCurrentIndex(new dwv.math.Index(values));
   }
 
   /**
@@ -229,6 +303,10 @@ export class DwvComponent implements OnInit {
     for (let i = 0; i < this.dwvApp.getNumberOfLoadedData(); ++i) {
       this.dwvApp.render(i);
     }
+  }
+
+  test = () => {
+    // this.dwvApp.setToolFeatures({ shapeName: 'Rectangle' });
   }
 
   /**

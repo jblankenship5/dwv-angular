@@ -1,8 +1,16 @@
 {
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
+    
     "outDir": "./out-tsc/app",
-    "types": []
+    "paths": {
+      "stream": [
+        "./node_modules/stream-browserify"
+      ],
+    },
+    "types": [
+      "node",
+    ]
   },
   "files": [
     "src/main.ts",

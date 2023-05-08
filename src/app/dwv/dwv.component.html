@@ -1,53 +1,50 @@
 <div id="dwv">
-  <mat-progress-bar mode="determinate" value="{{ loadProgress }}"></mat-progress-bar>
+  <!-- <mat-progress-bar mode="indeterminate" value="{{ loadProgress }}"></mat-progress-bar> -->
   <div class="button-row">
-    <mat-button-toggle-group name="tool" [disabled]="!dataLoaded">
-      <mat-button-toggle value="{{ tool }}" color="primary"
-        *ngFor="let tool of toolNames"
-        title="{{ tool }}"
-        (click)="onChangeTool(tool)"
-        [disabled]="!dataLoaded || !canRunTool(tool)">
-        <mat-icon>{{ getToolIcon(tool) }}</mat-icon>
-      </mat-button-toggle>
-    </mat-button-toggle-group>
-
-    <mat-button-toggle-group name="reset" [disabled]="!dataLoaded"
-      (change)="onSingleToogleChange($event)">
-      <mat-button-toggle color="primary"
-        title="Reset"
-        (click)="onReset()">
-        <mat-icon>refresh</mat-icon>
-      </mat-button-toggle>
-    </mat-button-toggle-group>
-
-    <mat-button-toggle-group name="reset" [disabled]="!dataLoaded"
-      (change)="onSingleToogleChange($event)">
-      <mat-button-toggle color="primary"
-        title="Toggle Orientation"
-        (click)="toggleOrientation()">
-        <mat-icon>cameraswitch</mat-icon>
-      </mat-button-toggle>
-    </mat-button-toggle-group>
-
-    <mat-button-toggle-group name="tags" [disabled]="!dataLoaded"
-      (change)="onSingleToogleChange($event)">
-      <mat-button-toggle color="primary"
-        title="Tags"
-        (click)="openTagsDialog()">
-        <mat-icon>library_books</mat-icon>
-      </mat-button-toggle>
-    </mat-button-toggle-group>
-</div>
+    <mat-form-field appearance="outline">
+      <!-- <mat-label>Select Tool</mat-label> -->
+      <mat-select class="mat-select" [disabled]="!dataLoaded" (selectionChange)="onChangeTool($event.value)" vi
+        [(value)]="selectedTool">
+        <ng-container *ngFor="let tool of toolNames">
+          <mat-option *ngIf="dataLoaded && canRunTool(tool)" [value]="tool">
+            <mat-icon>{{ getToolIcon(tool) }}</mat-icon>{{ getToolName(tool) }}
+          </mat-option>
+        </ng-container>
+      </mat-select>
+    </mat-form-field>
+    </div>
+    <div class="button-row">
+      <button mat-raised-button class="raised-button" color="primary" title="Reset" (click)="onReset()"
+        [disabled]="!dataLoaded">
+        Reset
+      </button>
+      <button mat-raised-button color="primary" title="Toggle Orientation" (click)="toggleOrientation()"
+        [disabled]="!dataLoaded">
+        Orientation
+      </button>
+      <button mat-raised-button class="raised-button" color="primary" title="Tags" (click)="openTagsDialog()"
+        [disabled]="!dataLoaded">
+        Tags
+      </button>
+    </div>
+    <mat-slider class="example-margin" min="0" *ngIf="selectedTool=='Scroll'" [max]="rangeMaxLayer">
+      <input matSliderThumb [(ngModel)]="rangeValueLayer" (ngModelChange)="onRangeChange($event)">
+    </mat-slider>
+    <div *ngIf="selectedTool=='WindowLevel'" class="tool-info-controls">
+      <p>Use your finger :)</p>
+      <p>Center: {{windowLevelCenter}}
+        Width: {{windowLevelWidth}}</p>
+    </div>
   <div id="layerGroup0" class="layerGroup">
     <div id="dropBox"></div>
   </div>
-  <div class="legend mat-small">
+  <!-- <div class="legend mat-small">
     <p>Powered by
-    <a href="https://github.com/ivmartel/dwv">dwv</a>
-    {{ versions.dwv }}
-    and
-    <a href="https://github.com/angular/angular">Angular</a>
-    {{ versions.angular }}
+      <a href="https://github.com/ivmartel/dwv">dwv</a>
+      {{ versions.dwv }}
+      and
+      <a href="https://github.com/angular/angular">Angular</a>
+      {{ versions.angular }}
     </p>
-  </div>
+  </div> -->
 </div>

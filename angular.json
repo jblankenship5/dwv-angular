@@ -17,6 +17,13 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "allowedCommonJsDependencies": [
+              "cornerstone-core",
+              "cornerstone-math",
+              "cornerstone-tools",
+              "cornerstone-wado-image-loader",
+              "dicom-parser"
+            ],
             "outputPath": "dist/dwv-angular",
             "index": "src/index.html",
             "main": "src/main.ts",

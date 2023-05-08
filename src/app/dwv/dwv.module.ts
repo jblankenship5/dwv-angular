@@ -12,6 +12,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
+import { MatSelectModule } from '@angular/material/select';
+import { FormsModule } from '@angular/forms';
+import { MatSliderModule } from '@angular/material/slider';
 
 import { DwvComponent } from './dwv.component';
 import { TagsDialogComponent } from './tags-dialog.component';
@@ -35,7 +38,7 @@ import { TagsTableComponent } from './tags-table.component';
         MatTableModule,
         MatPaginatorModule,
         MatSortModule,
-        MatFormFieldModule
+        MatFormFieldModule, MatSelectModule, FormsModule, MatSliderModule,
     ],
     exports: [
         DwvComponent
