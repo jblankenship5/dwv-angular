@@ -1,0 +1,3 @@
+[submodule "dwv-ember"]
+	path = dwv-ember
+	url = https://github.com/jblankenship5/dwv-angular
