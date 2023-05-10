@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import * as cornerstone from 'cornerstone-core';
 import * as cornerstoneTools from 'cornerstone-tools';
 import * as cornerstoneMath from 'cornerstone-math';
@@ -7,23 +7,38 @@ import * as Hammer from 'hammerjs';
 import * as cornerstoneWADOImageLoader from 'cornerstone-wado-image-loader';
 import * as dicomParser from 'dicom-parser';
 import { HostListener } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 
 
 
 @Component({
   selector: 'app-cornerstone-viewer',
   templateUrl: './cornerstone-viewer.component.html',
-  styleUrls: ['./cornerstone-viewer.component.scss']
+  styleUrls: ['./cornerstone-viewer.component.scss'],
+
+  // providers: [
+  //   // list of services to be registered
+  //   ActivatedRoute
+  // ],
 })
 
 export class CornerstoneViewerComponent {
+
+  // ngOnInit() {
+  //   this.route.queryParams
+  //     .subscribe(params => {
+  //       console.log(params); // { orderby: "price" }
+  //     }
+  //     );
+  // }
+
   private image: any;
   private element: any;
   private imageIds = [
-    'wadouri:http://10.0.0.50:8000/sample_samsung.dcm',
-    'wadouri:http://10.0.0.50:8000/IM-0001-0014.dcm',
-    'wadouri:http://10.0.0.50:8000/IM-0001-0012.dcm',
-    'wadouri:http://10.0.0.50:8000/IM-0001-0013.dcm',
+    // 'wadouri:http://10.0.0.50:8000/sample_samsung.dcm',
+    // 'wadouri:http://10.0.0.50:8000/IM-0001-0014.dcm',
+    // 'wadouri:http://10.0.0.50:8000/IM-0001-0012.dcm',
+    // 'wadouri:http://10.0.0.50:8000/IM-0001-0013.dcm',
   ];
   maxStackIndex: number = 0; // Set this value based on the number of images in the stack
   currentStackIndex: number = 0;
@@ -32,24 +47,36 @@ export class CornerstoneViewerComponent {
     imageIds: this.imageIds,
   };
   private images = [];
+  private instanceID: number;
   private isFirstImageLoaded = false;
   // WwwcTool = cornerstoneTools.WwwcTool;
 
   // const WwwcTool = cornerstoneTools.WwwcTool;
-  constructor() {
+  constructor(private route: ActivatedRoute) {
+
     cornerstoneWADOImageLoader.external.cornerstone = cornerstone;
     cornerstoneWADOImageLoader.external.dicomParser = dicomParser;
     cornerstone.registerImageLoader('dicomweb', cornerstoneWADOImageLoader.wadouri.loadImage);
     cornerstoneTools.external.cornerstone = cornerstone;
     cornerstoneTools.external.Hammer = Hammer;
     cornerstoneTools.external.cornerstoneMath = cornerstoneMath;
+
+    this.route.queryParams.subscribe(params => {
+      this.instanceID = params['instanceID'];
+      if (this.instanceID != undefined) {
+        this.imageIds.push(`wadouri:https://pim-health.app/instances/${params['instanceID']}/dicom`);
+        console.log("imageIds");
+        console.log(this.imageIds);
+        this.startView();
+      }
+    });
   }
 
 
-  @HostListener('window:resize', ['$event'])
-  onResize(event) {
-    // this.updateImageSize();
-  }
+  // @HostListener('window:resize', ['$event'])
+  // onResize(event) {
+  //   // this.updateImageSize();
+  // }
 
   onSliderChange(event: any) {
     this.image = this.images[this.currentStackIndex];
@@ -65,7 +92,7 @@ export class CornerstoneViewerComponent {
     // Change the image in the stack here...
   }
 
-  ngAfterViewInit() {
+  startView() {
 
     cornerstoneTools.init({
       globalToolSyncEnabled: true,
@@ -84,9 +111,23 @@ export class CornerstoneViewerComponent {
 
 
     cornerstone.enable(element);
+
+    const headers = {
+      'Authorization': 'Bearer GWk_sAzB2w8ppT3mK8_H8XKZjs070Zsjv5srWujEFAI',
+    };
+
+    const options = {
+      headers: headers
+    };
+
+    cornerstoneWADOImageLoader.configure({
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('Authorization', 'Bearer xyz')
+      },
+    });
+
     this.imageIds.forEach((imageId, index) => {
-      cornerstone.loadImage(imageId).then((image) => {
-        // Display the image
+      cornerstone.loadImage(imageId, options).then((image) => {
 
         this.images.push(image);
         if (this.isFirstImageLoaded) {
@@ -95,14 +136,11 @@ export class CornerstoneViewerComponent {
         const viewport = cornerstone.getDefaultViewportForImage(element, this.images[0]);
         cornerstone.displayImage(element, this.images[0], viewport);
         this.isFirstImageLoaded = true;
-
       });
     });
 
 
-
-
-    const LengthTool = cornerstoneTools.LengthTool;
+    // const LengthTool = cornerstoneTools.LengthTool;
     const WwwcTool = cornerstoneTools.WwwcTool;
     const ZoomTouchPinchTool = cornerstoneTools.ZoomTouchPinchTool;
     const PanMultiTouchTool = cornerstoneTools.PanMultiTouchTool;
@@ -475,20 +513,20 @@ export class CornerstoneViewerComponent {
   }
 
 
-  updateImageSize() {
-    if (this.image) {
+  // updateImageSize() {
+  //   if (this.image) {
 
-      const viewport = cornerstone.getDefaultViewportForImage(this.element, this.image);
-      //this.imageIds.forEach((imageId, index) => {
-      //  cornerstone.loadImage(imageId).then((image) => {
-      // Display the image
+  //     const viewport = cornerstone.getDefaultViewportForImage(this.element, this.image);
+  //     //this.imageIds.forEach((imageId, index) => {
+  //     //  cornerstone.loadImage(imageId).then((image) => {
+  //     // Display the image
 
-      cornerstone.displayImage(this.element, this.image, viewport);
-      cornerstone.resize(this.element, true);
+  //     cornerstone.displayImage(this.element, this.image, viewport);
+  //     cornerstone.resize(this.element, true);
 
-      // });
-      //});
+  //     // });
+  //     //});
 
-    }
-  }
+  //   }
+  // }
 }

@@ -8,12 +8,18 @@ import { environment } from '../environments/environment';
 import { CornerstoneViewerComponent } from './cornerstone-viewer/cornerstone-viewer.component';
 import { MatSliderModule } from '@angular/material/slider';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
+// import { ActivatedRoute } from '@angular/router';
 
 @NgModule({
   declarations: [AppComponent, CornerstoneViewerComponent],
-  imports: [FormsModule,
+  imports: [RouterModule.forRoot([]), FormsModule,
     ReactiveFormsModule, MatSliderModule, DwvModule, ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  // providers: [
+  //   // list of services to be registered
+  //   ActivatedRoute
+  // ],
 })
 
 export class AppModule {}
